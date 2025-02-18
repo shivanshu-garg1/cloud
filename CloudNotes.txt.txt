@@ -1,0 +1,215 @@
+CREATING VIRTUAL MACHINE ON PHYSICAL MACHINE;
+---------------------------------------------
+S1:> Go to EC2 Services
+   s1->a : click on launch instance
+
+S2:> Give Name/tag for instance
+    S2->b : Select Ami(Amazone machine image) Amazonelinux
+    S2->c : Give to instace Type (t2.micro);
+    S2->d : Then create keyPair for amazone linux -> name->rsa->.pem file type and create key keyPair and select the key pair that you have created
+    S2->e : Then give network to general and allow ssh traffic
+    S2->f : Then give Storage 8gb for amazone linux
+    S2->g : create instance
+
+s3:> Go to the instaces then 
+ a: select the instance that you have created
+ b: click on connect and connect the vm 
+
+ -------------------------------------------
+
+CREATING INSTANCE FOR WINDOWS using remote desktop connection
+-----------------------------
+S1 : go to EC2 services 
+    a: click on the launch instance
+    b: give tag/name to instance 
+    c: select the amazone machine image to micresoft WINDOWS
+    d: then go to instance type and select the t3.micro instance 
+    e: then create the key pair for windows click on createKey Pair -> give name -> select rsa -> select the .pem file type for windows 
+    then create key pair ->select the key pair that created
+    f:select general configuration in network access and allow ssh traffic
+    g: give Storage to the instance 30gb 
+    h: then create instance 
+
+S2: go to instances 
+    a: then go to the instances 
+    b:select the instance click on connect 
+    c: got to the rdb(\   ) click on get password then select the .pem file and click on decrypt
+    e: open remote desktop connection  click on show more option 
+    f: copy the public dns from the rdb paste on the place of computer in rdc
+    g: give username to Administrator and click on  connect
+    h: copy the password from rdb and paste it then click on yes and after that accept all the permition and instance using windows is created
+------------------------------------------
+
+CONNECTION WITH PUTTY
+S1 : Go to the EC2 services
+    a: click on launch instance
+    b: give name/tag to the instance
+    c: give amazone machine image amazone linux(optional)
+    d: give instance type to t2.micro
+    e: keyPair -> create keyPair -> name -> select rsa -> select .ppk file for PUTTY -> create key pair
+    f: select the key pair that you have created
+    G: select the 8 gb Storage and create instance
+    h: then go to the instances and select the instance that you have created and click on connect
+    i: open PUTTY software
+    j: give host name/ip (which is your public ipv4 address)
+    k: then go to category -> connection -> ssh -> auth -> credentials
+    l: select the .pem file and open then click on yes instance ius connected with PUTTY
+------------------------------------------ 
+
+Instal nginx on vm/windows/PUTTY
+S1: Go to the EC2 services 
+    a:click on launch instance 
+    b:give tag/name 
+    c: select ami machine ubantu
+    d: select the instance type - > t2.micro
+    e: create the key pair ->name->select rsa->keyPair type .pem file ->create key pair
+    then select the key pairthat you have created
+    f: network access -> general configuration and allow ssh traffic 
+    g: give Storage 8gb 
+    h: create instance 
+
+S2 : go to the instace that you have created 
+    a: select the instance and click on connect and connect it
+    b: the terminal opened give command sudo su - 
+    c: then yum update -y
+    d: then yum install nginx/apache@2 -y
+    e: to check the nginx/apache@2 statusgive command
+        systemctl status nginx/apache@2
+    f: to start status give command 
+        systemctl start nginx/apache@2
+    
+    The nginx/apache@2 is created 
+For Apache All the steps remain same
+
+------------------------------------------
+
+Connect the instance with   VM WARE ubantu linux
+S1: Go to the EC2 services 
+    a:click on launch instance 
+    b:give tag/name 
+    c: select ami machine ubantu
+    d: select the instance type - > t2.micro
+    e: create the key pair ->name->select rsa->keyPair type .pem file ->create key pair
+    then select the key pairthat you have created
+    f: network access -> general configuration and allow ssh traffic 
+    g: give Storage 8gb 
+    h: create instance 
+
+S2 : set the correct permition for the key file using command
+    a:chmod 400 your-key-file.pem
+    b:get EC2 public ip address 
+    c:give command ssh -i /path/to/your/file.pem ubantu@publicIP
+    Linux is connected
+
+-----------------------------------------
+Create a bucket and make public using bucket policy
+S1: Go to s3 services
+    a:Set general configuration to -> General purpose
+    b:Give name to bucket(name should be unique)
+    c:object ownership to disable
+    Block public access will be off click on warning check box 
+    d:bucket virsoning -> enable
+    e:click on create bucket
+S2: Go to the buckets click on the bucket then click on upload -> add files(add files) then click on upload;
+a:then go to the bucket click on the bucket and go to the permisions
+b:go  to the bucket policy and click on  edit then click on bucket policy generator
+c:select policy type (s3 bucket policy)
+d:add statements in principle input give * means all
+e: then actions select GetObject
+f: copy the arn (amazone resource name) from bucket policy and paste and at last of arn add/*
+g: click on add statements and then click on generate policy
+h: save all the changes
+-----------------------------------------------
+Create a bucket and make public using acl(access control list)
+S1: Go to the s3 services
+    a:set the general configuration to ->general purpose
+    b:give name to bucket(name will be unique)
+    c: object ownership to  acl->enable
+    d: block public access will be off
+    e: then enable versoning
+    f:then click on create bucket
+S2:click on the bucket and click on the upload 
+    a:add files and click on upload
+    b:go to the bucket that you have created  select the files and cleck on the action and select make public using acl
+    and then click on make public your bucket is public using acl
+-----------------------------------------------
+VPC -> Virtual private cloud (public)
+ S1 : create VPC
+    a:go to vpc services and click on create vpc
+    b:select the vpc only option and then give name to your vpc
+    d:then give ipv4 cidr (eg:10.0.0.0/16);
+    e:other settings remains same 
+    f:then click on create vpc;
+
+S2: create subnet
+    a: In vpc nav click on subnet and then click on create subnet
+    b: then select the vpc that you have created 
+    c: give name to subnet 
+    d: give ipv4 cidr to subnet (eg:10.0.0.0/20);
+    e:click on create subnet
+
+S3: create Internet Gateway
+    a:in vpc nav go to Internet Gateway
+    b: click on create Internet Gateway
+    c: give name to internet Gateway
+    d:click on create internet Gateway
+    e:then select the created gateway -> go to the actions and select the attach to vpc and attach the IG to vpc
+
+S4:  create route table
+    a:go to the vpc nav-> route table
+    b:click on create route table
+    c:give name to route table then select vpc that you have created;
+    d:then click on create route table 
+    e:the go to route and click on edit route ->add route->with destinatin ->0.0.0.0/0 ->then target to internet gateway and
+     select the internet gateway that you have created then save all the changes
+------------------------------------------------
+VPC -> Virtual Private Cloud (Private)
+S1:create vpc
+    a:go to vpc click on create vpc
+    b:select vpc  option  only 
+    c:give name to vpc
+    d:give ipv4 cidr to vpc (eg:10.0.0.0/16);
+    e:other settings remains same
+    f:click on create vpc
+
+S2: create subnet public
+    a: In vpc nav click on subnet and then click on create subnet
+    b: then select the vpc that you have created 
+    c: give name to subnet 
+    d: give ipv4 cidr to subnet (eg:10.0.0.0/20);
+    e:click on create subnet
+
+S3:Create subnet private
+    a:in vpc nav go to the subnet
+    b: click on create subnet
+    c: give name to the subnet 
+    d: select the vpc that you have created
+    e: then give ipv4 cidr tp(10.0.0.0/20);
+    f:then click on create subnet
+
+S4: create NAT gateway 
+    a:click on the vpc nav -> NAT gateway
+    b:give name  to privet subnet
+    c:select public subnet 
+    d:allocate new elastic ip
+    e:click on create NAT gateway
+
+S5: Create route table
+    a:click on vpc nav -> route table
+    b:give name to route table 
+    c:click on create route table 
+    d:then click on edit route table ->add route
+    e:destination to 0.0.0.0/0 and target to NAT gateway
+
+S6 :Attach vpc to EC2
+    a:go to ec2 click on launch instance
+    b:give name to instance
+    c: select AMI 
+    d:select t2.micro (instance type)
+    e:select key pair rsa -> .pem file
+    f:in network access click on edit select the vpc 
+        f1: for public auto assign public id disabled
+        and security group to ssh
+        for private 
+        f1:auto assign public id is enable
+    g:and then click on create instance
